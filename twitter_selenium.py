@@ -429,6 +429,177 @@ class TwitterSeleniumScraper:
         except Exception as e:
             self.logger.error(f"❌ Erro ao salvar CSV: {e}")
 
+    def unfollow_user_by_username(self, username: str, delay: float = 3.0) -> bool:
+        """
+        Para de seguir um usuário específico usando Selenium
+
+        Args:
+            username: Nome de usuário (sem @)
+            delay: Tempo de espera após a ação (segundos)
+
+        Returns:
+            True se o unfollow foi bem-sucedido
+        """
+        try:
+            self.logger.info(f"🔄 Tentando dar unfollow em @{username}")
+
+            # Navegar para o perfil do usuário
+            profile_url = f"https://x.com/{username}"
+            self.driver.get(profile_url)
+            time.sleep(2)
+
+            # Procurar pelo botão "Following" ou "Seguindo"
+            following_button = None
+
+            # Tentar diferentes seletores para o botão de following
+            selectors = [
+                '//div[@data-testid="placementTracking"]//span[text()="Following"]/..',
+                '//div[@data-testid="placementTracking"]//span[text()="Seguindo"]/..',
+                '//button[contains(@aria-label, "Following")]',
+                '//button[contains(@aria-label, "Seguindo")]',
+                '//div[contains(@aria-label, "Following")]',
+                '//div[contains(@aria-label, "Seguindo")]'
+            ]
+
+            for selector in selectors:
+                try:
+                    following_button = WebDriverWait(self.driver, 5).until(
+                        EC.element_to_be_clickable((By.XPATH, selector))
+                    )
+                    break
+                except TimeoutException:
+                    continue
+
+            if not following_button:
+                self.logger.warning(f"⚠️ Botão 'Following' não encontrado para @{username}")
+                return False
+
+            # Clicar no botão Following
+            following_button.click()
+            time.sleep(1)
+
+            # Procurar pelo botão de confirmação "Unfollow"
+            unfollow_selectors = [
+                '//div[@data-testid="confirmationSheetConfirm"]',
+                '//button[contains(text(), "Unfollow")]',
+                '//button[contains(text(), "Deixar de seguir")]',
+                '//span[text()="Unfollow"]/..',
+                '//span[text()="Deixar de seguir"]/..'
+            ]
+
+            unfollow_button = None
+            for selector in unfollow_selectors:
+                try:
+                    unfollow_button = WebDriverWait(self.driver, 3).until(
+                        EC.element_to_be_clickable((By.XPATH, selector))
+                    )
+                    break
+                except TimeoutException:
+                    continue
+
+            if unfollow_button:
+                unfollow_button.click()
+                time.sleep(delay)
+                self.logger.info(f"✅ Unfollow realizado com sucesso: @{username}")
+                return True
+            else:
+                self.logger.warning(f"⚠️ Botão de confirmação não encontrado para @{username}")
+                return False
+
+        except Exception as e:
+            self.logger.error(f"❌ Erro ao dar unfollow em @{username}: {e}")
+            return False
+
+    def unfollow_users_batch(self, usernames: list, delay_between: float = 5.0, max_per_session: int = 20) -> dict:
+        """
+        Realiza unfollow em lote de múltiplos usuários
+
+        Args:
+            usernames: Lista de usernames para dar unfollow
+            delay_between: Tempo de espera entre cada unfollow (segundos)
+            max_per_session: Máximo de unfollows por sessão
+
+        Returns:
+            Dicionário com estatísticas da operação
+        """
+        results = {
+            'success': [],
+            'failed': [],
+            'total_processed': 0,
+            'success_count': 0,
+            'failed_count': 0
+        }
+
+        # Limitar quantidade por sessão
+        users_to_process = usernames[:max_per_session]
+
+        self.logger.info(f"🚀 Iniciando unfollow em lote: {len(users_to_process)} usuários")
+
+        for i, username in enumerate(users_to_process, 1):
+            self.logger.info(f"📋 Processando {i}/{len(users_to_process)}: @{username}")
+
+            success = self.unfollow_user_by_username(username, delay=2.0)
+
+            if success:
+                results['success'].append(username)
+                results['success_count'] += 1
+            else:
+                results['failed'].append(username)
+                results['failed_count'] += 1
+
+            results['total_processed'] += 1
+
+            # Delay entre unfollows (exceto no último)
+            if i < len(users_to_process):
+                self.logger.info(f"⏳ Aguardando {delay_between}s antes do próximo...")
+                time.sleep(delay_between)
+
+        # Log final
+        self.logger.info(f"📊 RESULTADO DO LOTE:")
+        self.logger.info(f"   ✅ Sucessos: {results['success_count']}")
+        self.logger.info(f"   ❌ Falhas: {results['failed_count']}")
+        self.logger.info(f"   📋 Total: {results['total_processed']}")
+
+        return results
+
+    def verify_unfollow_status(self, username: str) -> bool:
+        """
+        Verifica se ainda está seguindo um usuário específico
+
+        Args:
+            username: Nome de usuário para verificar
+
+        Returns:
+            True se ainda está seguindo, False se não está mais seguindo
+        """
+        try:
+            profile_url = f"https://x.com/{username}"
+            self.driver.get(profile_url)
+            time.sleep(2)
+
+            # Procurar por botão "Follow" (indica que não está mais seguindo)
+            follow_selectors = [
+                '//div[@data-testid="placementTracking"]//span[text()="Follow"]',
+                '//div[@data-testid="placementTracking"]//span[text()="Seguir"]',
+                '//button[contains(@aria-label, "Follow")]',
+                '//button[contains(@aria-label, "Seguir")]'
+            ]
+
+            for selector in follow_selectors:
+                try:
+                    WebDriverWait(self.driver, 3).until(
+                        EC.presence_of_element_located((By.XPATH, selector))
+                    )
+                    return False  # Não está mais seguindo
+                except TimeoutException:
+                    continue
+
+            return True  # Ainda está seguindo
+
+        except Exception as e:
+            self.logger.error(f"❌ Erro ao verificar status de @{username}: {e}")
+            return True  # Assumir que ainda está seguindo em caso de erro
+
     def close(self):
         """
         Fecha o navegador

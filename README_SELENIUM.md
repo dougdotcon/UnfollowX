@@ -30,19 +30,25 @@ Este script usa Selenium para contornar as limitações da API gratuita do Twitt
    OPENROUTER_API_KEY=sua_openrouter_key
    ```
 
-2. **Tenha suas credenciais de login do Twitter prontas:**
-   - Email ou username
-   - Senha
+2. **Faça login no Twitter/X no seu navegador:**
+   - Abra Chrome ou Brave
+   - Acesse https://x.com e faça login
+   - Mantenha o navegador aberto
 
 ## 🚀 Como usar
 
-### Modo Selenium (Recomendado)
+### Teste rápido (Recomendado primeiro)
+```bash
+python test_selenium_simple.py
+```
+
+### Modo Selenium Completo
 ```bash
 python twitter_unfollow_selenium.py
 ```
 
 O script irá:
-1. 🌐 Abrir o navegador e fazer login no Twitter
+1. 🌐 Usar seu navegador já logado (Chrome/Brave)
 2. 📋 Coletar listas de following/followers via scraping
 3. 🤖 Analisar perfis com IA
 4. 🛡️ Aplicar filtros de imunidade
@@ -53,11 +59,13 @@ O script irá:
 - ✅ Coleta dados diretamente do site
 - ✅ Não requer upgrade da API
 - ✅ Funciona com contas gratuitas
+- ✅ Usa seu navegador já logado (sem precisar inserir credenciais)
+- ✅ Suporta Chrome e Brave
 
 ### Limitações:
 - ⏳ Mais lento que a API
-- 🖥️ Requer navegador (Chrome)
-- 🔐 Precisa das credenciais de login
+- 🖥️ Requer navegador (Chrome/Brave)
+- 🔐 Precisa estar logado no navegador
 
 ## 🛡️ Segurança
 

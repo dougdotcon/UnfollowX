@@ -1,7 +1,17 @@
-# Editar requirements.txt para versão específica
-tweepy==4.14.0
+# Dependências para sistema Selenium-only (sem API do Twitter)
+# Selenium e automação web
+selenium>=4.15.0
+webdriver-manager>=3.8.0
+
+# Processamento de dados e IA
 requests>=2.31.0
-schedule>=1.2.0
 openai>=1.0.0
 pandas>=2.0.0
+
+# Utilitários
+schedule>=1.2.0
 python-dotenv>=1.0.0
+
+# Parsing e manipulação de dados web
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
