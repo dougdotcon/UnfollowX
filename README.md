@@ -8,7 +8,7 @@ Bot automático inteligente para dar unfollow em usuários que não te seguem de
 - 🤖 **Análise de IA** - OpenRouter para categorizar perfis
 - 🛡️ **Sistema de Imunidade** - Protege devs, pesquisadores, acadêmicos
 - 📊 **Análise em CSV** - Dados organizados e auditáveis
-- ⏰ **Execução Automática** - 10 unfollows por hora
+- ⏰ **Execução Automática** - 20 unfollows a cada 20 minutos
 - 💾 **Progresso Salvo** - Pode ser pausado e retomado
 - 🔄 **Filtros Inteligentes** - Múltiplos critérios de filtragem
 
