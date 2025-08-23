@@ -230,7 +230,7 @@ class TwitterUnfollower:
             access_token=access_token,
             access_token_secret=access_token_secret
         )
-        
+
         # Criar cliente da API v2
         self.client = tweepy.Client(
             consumer_key=api_key,
@@ -239,6 +239,9 @@ class TwitterUnfollower:
             access_token_secret=access_token_secret,
             wait_on_rate_limit=True
         )
+
+        # Criar cliente da API v1.1 para endpoints de followers/following
+        self.api_v1 = tweepy.API(auth, wait_on_rate_limit=True)
         
         # Obter informações do usuário autenticado
         try:
@@ -257,25 +260,48 @@ class TwitterUnfollower:
         following = set()
         try:
             logging.info("Obtendo lista de usuários que você segue...")
-            
-            # Usar paginação para obter todos os seguidos
-            paginator = tweepy.Paginator(
-                self.client.get_following,
-                id=self.user_id,
-                max_results=1000,
-                limit=10  # Limitar a 10 páginas por segurança
-            )
-            
-            for page in paginator:
-                if page.data:
-                    for user in page.data:
-                        following.add(user.id)
-                        
-            logging.info(f"Você segue {len(following)} usuários")
-            return following
-            
+
+            # Tentar API v1.1 primeiro
+            try:
+                for user in tweepy.Paginator(
+                    self.api_v1.get_friends,
+                    count=200,  # Máximo por página na API v1.1
+                    limit=50    # Limitar a 50 páginas por segurança (10k usuários)
+                ).flatten():
+                    following.add(user.id)
+
+                logging.info(f"Você segue {len(following)} usuários")
+                return following
+            except Exception as api_error:
+                logging.warning(f"API v1.1 falhou: {api_error}")
+
+                # Tentar API v2 como fallback
+                try:
+                    paginator = tweepy.Paginator(
+                        self.client.get_users_following,
+                        id=self.user_id,
+                        max_results=1000,
+                        limit=10,
+                        user_auth=True
+                    )
+
+                    for page in paginator:
+                        if page.data:
+                            for user in page.data:
+                                following.add(user.id)
+
+                    logging.info(f"Você segue {len(following)} usuários")
+                    return following
+                except Exception as v2_error:
+                    logging.error(f"API v2 também falhou: {v2_error}")
+                    raise api_error  # Re-raise the original error
+
         except Exception as e:
             logging.error(f"Erro ao obter lista de seguidos: {e}")
+            logging.error("LIMITAÇÃO DA API: Sua conta Twitter API tem acesso limitado.")
+            logging.error("Para usar este recurso, você precisa:")
+            logging.error("1. Upgrade para Twitter API Pro ($100/mês) ou")
+            logging.error("2. Usar entrada manual de dados (CSV)")
             return set()
 
     def get_followers(self) -> Set[int]:
@@ -285,25 +311,149 @@ class TwitterUnfollower:
         followers = set()
         try:
             logging.info("Obtendo lista de seus seguidores...")
-            
-            # Usar paginação para obter todos os seguidores
-            paginator = tweepy.Paginator(
-                self.client.get_followers,
-                id=self.user_id,
-                max_results=1000,
-                limit=10  # Limitar a 10 páginas por segurança
-            )
-            
-            for page in paginator:
-                if page.data:
-                    for user in page.data:
-                        followers.add(user.id)
-                        
-            logging.info(f"Você tem {len(followers)} seguidores")
-            return followers
-            
+
+            # Tentar API v1.1 primeiro
+            try:
+                for user in tweepy.Paginator(
+                    self.api_v1.get_followers,
+                    count=200,  # Máximo por página na API v1.1
+                    limit=50    # Limitar a 50 páginas por segurança (10k usuários)
+                ).flatten():
+                    followers.add(user.id)
+
+                logging.info(f"Você tem {len(followers)} seguidores")
+                return followers
+            except Exception as api_error:
+                logging.warning(f"API v1.1 falhou: {api_error}")
+
+                # Tentar API v2 como fallback
+                try:
+                    paginator = tweepy.Paginator(
+                        self.client.get_users_followers,
+                        id=self.user_id,
+                        max_results=1000,
+                        limit=10,
+                        user_auth=True
+                    )
+
+                    for page in paginator:
+                        if page.data:
+                            for user in page.data:
+                                followers.add(user.id)
+
+                    logging.info(f"Você tem {len(followers)} seguidores")
+                    return followers
+                except Exception as v2_error:
+                    logging.error(f"API v2 também falhou: {v2_error}")
+                    raise api_error  # Re-raise the original error
+
         except Exception as e:
             logging.error(f"Erro ao obter lista de seguidores: {e}")
+            logging.error("LIMITAÇÃO DA API: Sua conta Twitter API tem acesso limitado.")
+            logging.error("Para usar este recurso, você precisa:")
+            logging.error("1. Upgrade para Twitter API Pro ($100/mês) ou")
+            logging.error("2. Usar entrada manual de dados (CSV)")
+            return set()
+
+    def load_csv_data(self, csv_file: str) -> Set[int]:
+        """
+        Carrega dados de usuários de um arquivo CSV
+        Formato esperado: user_id,username
+        """
+        user_ids = set()
+        try:
+            import csv
+            import os
+
+            if not os.path.exists(csv_file):
+                logging.error(f"Arquivo não encontrado: {csv_file}")
+                return set()
+
+            with open(csv_file, 'r', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                # Pular cabeçalho se existir
+                first_row = next(reader, None)
+                if first_row and first_row[0].lower() == 'user_id':
+                    pass  # Era cabeçalho, continuar
+                else:
+                    # Primeira linha é dados, processar
+                    if first_row and len(first_row) >= 1:
+                        try:
+                            user_ids.add(int(first_row[0]))
+                        except ValueError:
+                            logging.warning(f"ID inválido na primeira linha: {first_row[0]}")
+
+                # Processar resto do arquivo
+                for row in reader:
+                    if len(row) >= 1:
+                        try:
+                            user_ids.add(int(row[0]))
+                        except ValueError:
+                            logging.warning(f"ID inválido: {row[0]}")
+
+            logging.info(f"Carregados {len(user_ids)} usuários de {csv_file}")
+            return user_ids
+
+        except Exception as e:
+            logging.error(f"Erro ao carregar CSV {csv_file}: {e}")
+            return set()
+
+    def get_following_manual(self, csv_file: str = "following.csv") -> Set[int]:
+        """
+        Obtém lista de usuários que você segue a partir de arquivo CSV
+        """
+        logging.info(f"Carregando lista de seguidos de {csv_file}...")
+        return self.load_csv_data(csv_file)
+
+    def get_followers_manual(self, csv_file: str = "followers.csv") -> Set[int]:
+        """
+        Obtém lista de usuários que te seguem a partir de arquivo CSV
+        """
+        logging.info(f"Carregando lista de seguidores de {csv_file}...")
+        return self.load_csv_data(csv_file)
+
+    def get_user_ids_from_usernames(self, usernames: List[str]) -> Set[int]:
+        """
+        Converte lista de usernames para user_ids usando a API do Twitter
+
+        Args:
+            usernames: Lista de usernames (sem @)
+
+        Returns:
+            Set de user_ids (inteiros)
+        """
+        user_ids = set()
+
+        try:
+            logging.info(f"Convertendo {len(usernames)} usernames para user_ids...")
+
+            # Processar em lotes de 100 (limite da API)
+            for i in range(0, len(usernames), 100):
+                batch = usernames[i:i+100]
+
+                try:
+                    # Usar API v2 para obter user_ids
+                    users = self.client.get_users(
+                        usernames=batch,
+                        user_fields=['id', 'username']
+                    )
+
+                    if users.data:
+                        for user in users.data:
+                            user_ids.add(user.id)
+
+                    # Rate limiting
+                    time.sleep(1)
+
+                except Exception as e:
+                    logging.warning(f"Erro ao processar lote {i//100 + 1}: {e}")
+                    continue
+
+            logging.info(f"Convertidos {len(user_ids)} usernames para user_ids")
+            return user_ids
+
+        except Exception as e:
+            logging.error(f"Erro ao converter usernames: {e}")
             return set()
 
     def find_non_followers(self, following: Set[int], followers: Set[int]) -> Set[int]:
@@ -989,6 +1139,11 @@ def show_status(unfollower):
     print(f"{'='*60}")
 
 def main():
+    import sys
+
+    # Verificar se é modo manual
+    manual_mode = '--manual' in sys.argv
+
     # Carregar credenciais das variáveis de ambiente
     API_KEY = os.getenv('TWITTER_API_KEY')
     API_SECRET = os.getenv('TWITTER_API_SECRET')
@@ -1029,8 +1184,16 @@ def main():
 
         # ETAPA 1: Extrair listas
         print(f"\n📋 ETAPA 1: Extraindo listas...")
-        following = unfollower.get_following()
-        followers = unfollower.get_followers()
+
+        if manual_mode:
+            print("🔧 MODO MANUAL: Carregando dados de arquivos CSV...")
+            following = unfollower.get_following_manual()
+            followers = unfollower.get_followers_manual()
+        else:
+            print("🔧 MODO API: Obtendo dados via Twitter API...")
+            following = unfollower.get_following()
+            followers = unfollower.get_followers()
+
         non_followers = unfollower.find_non_followers(following, followers)
 
         print(f"   Você segue: {len(following)} usuários")

@@ -24,7 +24,7 @@ Bot automático inteligente para dar unfollow em usuários que não te seguem de
 
 ```bash
 # Instalar dependências
-pip install -r requirements.txt
+pip install -r requirements.txt --force-reinstall
 ```
 
 ## ⚙️ Configuração

@@ -80,9 +80,28 @@ def main():
         print(f"      • Não te seguem de volta: {len(non_followers)} usuários")
 
         if not non_followers:
-            print("\n🎉 RESULTADO: Todos os usuários que você segue também te seguem de volta!")
-            print("   Nenhum unfollow necessário. Sistema finalizado.")
-            return
+            if len(following) == 0 and len(followers) == 0:
+                print("\n❌ LIMITAÇÃO DA API DETECTADA!")
+                print("   Sua conta Twitter API tem acesso limitado e não pode acessar")
+                print("   os endpoints de followers/following.")
+                print("\n💡 SOLUÇÕES DISPONÍVEIS:")
+                print("   1. 💰 Upgrade para Twitter API Pro ($100/mês)")
+                print("   2. 📁 Usar entrada manual de dados:")
+                print("      • Exporte suas listas manualmente do Twitter")
+                print("      • Salve como CSV com colunas: user_id, username")
+                print("      • Use o modo manual do script")
+                print("\n📖 INSTRUÇÕES PARA MODO MANUAL:")
+                print("   python twitter_unfollow.py --manual")
+                print("\n📝 FORMATO DO CSV:")
+                print("   Crie dois arquivos CSV:")
+                print("   • following.csv - usuários que você segue")
+                print("   • followers.csv - usuários que te seguem")
+                print("   Formato: user_id,username (uma linha por usuário)")
+                return
+            else:
+                print("\n🎉 RESULTADO: Todos os usuários que você segue também te seguem de volta!")
+                print("   Nenhum unfollow necessário. Sistema finalizado.")
+                return
 
         # ETAPA 2-3: Analisar perfis e salvar CSV
         print(f"\n🤖 ETAPA 2-3/5: Analisando {len(non_followers)} perfis com IA...")
