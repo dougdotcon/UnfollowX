@@ -26,7 +26,7 @@ def test_initialization():
     try:
         unfollower = TwitterSeleniumUnfollower(
             openrouter_api_key=openrouter_key,
-            headless=False,  # Visível para teste
+            headless=True,  # Headless para evitar conflitos
             browser="chrome"
         )
         print("✅ Sistema inicializado com sucesso")

@@ -12,7 +12,7 @@ import csv
 from datetime import datetime
 from typing import Set, Dict, List
 from twitter_selenium import TwitterSeleniumScraper
-from twitter_unfollow import ImmunityAnalyzer
+from immunity_analyzer import ImmunityAnalyzer
 
 class TwitterSeleniumUnfollower:
     def __init__(self, openrouter_api_key: str, headless: bool = False, browser: str = "chrome"):
@@ -35,7 +35,7 @@ class TwitterSeleniumUnfollower:
             level=logging.INFO,
             format='%(asctime)s - %(levelname)s - %(message)s',
             handlers=[
-                logging.FileHandler('twitter_selenium_only.log'),
+                logging.FileHandler('twitter_selenium_only.log', encoding='utf-8'),
                 logging.StreamHandler()
             ]
         )
@@ -53,7 +53,7 @@ class TwitterSeleniumUnfollower:
             self.logger.info("🔧 Inicializando scraper Selenium...")
             self.scraper = TwitterSeleniumScraper(
                 headless=self.headless,
-                use_existing_profile=True,
+                use_existing_profile=not self.headless,  # Não usar perfil existente em modo headless
                 browser=self.browser
             )
             
@@ -86,12 +86,12 @@ class TwitterSeleniumUnfollower:
         
         # Coletar following
         self.logger.info("📤 Coletando lista de following...")
-        following_data = self.scraper.get_following_users(max_users=max_following)
+        following_data = self.scraper.get_following_list(max_users=max_following)
         following_usernames = {user['username'] for user in following_data}
-        
-        # Coletar followers  
+
+        # Coletar followers
         self.logger.info("📥 Coletando lista de followers...")
-        followers_data = self.scraper.get_followers_users(max_users=max_followers)
+        followers_data = self.scraper.get_followers_list(max_users=max_followers)
         followers_usernames = {user['username'] for user in followers_data}
         
         self.logger.info(f"📊 Coletados: {len(following_usernames)} following, {len(followers_usernames)} followers")
