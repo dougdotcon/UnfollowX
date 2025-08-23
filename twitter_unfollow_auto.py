@@ -143,101 +143,21 @@ def main():
                 delay_between=3.0
             )
 
-        # ETAPA 1: Extrair listas
-        print(f"\n📋 ETAPA 1/5: Extraindo listas do Twitter...")
-        following = unfollower.get_following()
-        followers = unfollower.get_followers()
-        non_followers = unfollower.find_non_followers(following, followers)
-
-        print(f"   📊 Estatísticas:")
-        print(f"      • Você segue: {len(following)} usuários")
-        print(f"      • Te seguem: {len(followers)} usuários")
-        print(f"      • Não te seguem de volta: {len(non_followers)} usuários")
-
-        if not non_followers:
-            if len(following) == 0 and len(followers) == 0:
-                print("\n❌ LIMITAÇÃO DA API DETECTADA!")
-                print("   Sua conta Twitter API tem acesso limitado e não pode acessar")
-                print("   os endpoints de followers/following.")
-                print("\n💡 SOLUÇÕES DISPONÍVEIS:")
-                print("   1. 💰 Upgrade para Twitter API Pro ($100/mês)")
-                print("   2. 📁 Usar entrada manual de dados:")
-                print("      • Exporte suas listas manualmente do Twitter")
-                print("      • Salve como CSV com colunas: user_id, username")
-                print("      • Use o modo manual do script")
-                print("\n📖 INSTRUÇÕES PARA MODO MANUAL:")
-                print("   python twitter_unfollow.py --manual")
-                print("\n📝 FORMATO DO CSV:")
-                print("   Crie dois arquivos CSV:")
-                print("   • following.csv - usuários que você segue")
-                print("   • followers.csv - usuários que te seguem")
-                print("   Formato: user_id,username (uma linha por usuário)")
-                return
+            # Mostrar resultados
+            if results['success']:
+                print("\n✅ Processo concluído com sucesso!")
+                if 'stats' in results:
+                    stats = results['stats']
+                    print(f"📊 Estatísticas:")
+                    print(f"   📤 Following: {stats.get('following_count', 0)}")
+                    print(f"   📥 Followers: {stats.get('followers_count', 0)}")
+                    print(f"   🎯 Não-seguidores: {stats.get('non_followers_count', 0)}")
+                    print(f"   🤖 Analisados: {stats.get('analyzed_count', 0)}")
+                    print(f"   ⚡ Unfollows: {stats.get('unfollow_results', {}).get('success_count', 0)}")
+                if results.get('csv_file'):
+                    print(f"💾 Análise salva em: {results['csv_file']}")
             else:
-                print("\n🎉 RESULTADO: Todos os usuários que você segue também te seguem de volta!")
-                print("   Nenhum unfollow necessário. Sistema finalizado.")
-                return
-
-        # ETAPA 2-3: Analisar perfis e salvar CSV
-        print(f"\n🤖 ETAPA 2-3/5: Analisando {len(non_followers)} perfis com IA...")
-        print("   ⏳ Este processo pode demorar alguns minutos...")
-        
-        csv_filename = unfollower.save_non_followers_to_csv(non_followers)
-
-        if not csv_filename:
-            print("❌ ERRO: Falha ao salvar análise em CSV. Abortando processo.")
-            return
-
-        print(f"   ✅ Análise salva em: {csv_filename}")
-
-        # ETAPA 4: Filtrar usuários imunes
-        print(f"\n🛡️ ETAPA 4/5: Aplicando filtros de imunidade...")
-        filter_config = unfollower.create_smart_filter_config(aggressive=False)
-        filtered_non_followers = unfollower.load_non_followers_from_csv(csv_filename, filter_config)
-
-        # Salvar estado para sistema automático
-        state = unfollower.load_state()
-        state['non_followers'] = filtered_non_followers
-        state['total_to_process'] = len(filtered_non_followers)
-        state['processed_count'] = 0
-        state['last_update'] = time.strftime('%Y-%m-%d %H:%M:%S')
-        state['csv_filename'] = csv_filename
-        state['filter_mode'] = 'normal'
-        unfollower.save_state(state)
-
-        print(f"   ✅ Usuários filtrados para unfollow: {len(filtered_non_followers)}")
-
-        if not filtered_non_followers:
-            print("\n🛡️ RESULTADO: Todos os usuários são imunes!")
-            print("   Nenhum unfollow será realizado. Sistema finalizado.")
-            return
-
-        # ETAPA 5: Iniciar sistema automático
-        print(f"\n⚡ ETAPA 5/5: Configurando sistema automático...")
-        print(f"   📊 Arquivo de análise: {csv_filename}")
-        print(f"   ⏰ Frequência: 20 unfollows a cada 20 minutos")
-        print(f"   🛑 Para parar: Pressione Ctrl+C")
-        print(f"   📈 Progresso será salvo automaticamente")
-        
-        # Estimativa de tempo
-        hours_estimated = len(filtered_non_followers) / 60  # 20 unfollows a cada 20 min = 60 por hora
-        print(f"   ⏱️ Tempo estimado total: {hours_estimated:.1f} horas")
-        
-        print(f"\n{'='*70}")
-        print("🚨 ATENÇÃO: O sistema iniciará em 10 segundos...")
-        print("   Pressione Ctrl+C agora se quiser cancelar")
-        print(f"{'='*70}")
-
-        # Countdown
-        for i in range(10, 0, -1):
-            print(f"   Iniciando em {i}s...", end='\r')
-            time.sleep(1)
-
-        print("\n🚀 INICIANDO SISTEMA AUTOMÁTICO...")
-        print(f"{'='*70}")
-
-        # Iniciar sistema automático
-        unfollower.start_scheduled_unfollows(use_existing_csv=True)
+                print(f"❌ Processo falhou: {results['message']}")
 
     except KeyboardInterrupt:
         print("\n\n🛑 SISTEMA INTERROMPIDO PELO USUÁRIO")

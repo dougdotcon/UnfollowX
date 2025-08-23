@@ -207,6 +207,25 @@ class TwitterSeleniumUnfollower:
 
         return profile_data
 
+    def _parse_count(self, count_text: str) -> int:
+        """
+        Converte texto de contagem (ex: "1.2K", "5M") para número
+        """
+        if not count_text:
+            return 0
+
+        count_text = count_text.replace(',', '').upper()
+
+        try:
+            if 'K' in count_text:
+                return int(float(count_text.replace('K', '')) * 1000)
+            elif 'M' in count_text:
+                return int(float(count_text.replace('M', '')) * 1000000)
+            else:
+                return int(count_text)
+        except:
+            return 0
+
     def analyze_users_with_ai(self, usernames: Set[str], batch_size: int = 50, save_progress: bool = True) -> List[Dict]:
         """
         Analisa usuários com IA para determinar imunidade
@@ -405,7 +424,8 @@ class TwitterSeleniumUnfollower:
         return {}
     
     def run_full_process(self, max_following: int = 5000, max_followers: int = 5000,
-                        max_unfollows: int = 20, delay_between: float = 5.0) -> Dict:
+                        max_unfollows: int = 20, delay_between: float = 5.0,
+                        safety_mode: bool = True) -> Dict:
         """
         Executa o processo completo de unfollow
 
@@ -414,6 +434,7 @@ class TwitterSeleniumUnfollower:
             max_followers: Máximo de followers para coletar
             max_unfollows: Máximo de unfollows por execução
             delay_between: Delay entre unfollows (segundos)
+            safety_mode: Se True, aplica verificações de segurança extras
 
         Returns:
             Dicionário com resultados da execução
@@ -429,6 +450,21 @@ class TwitterSeleniumUnfollower:
         try:
             self.logger.info("🚀 INICIANDO PROCESSO COMPLETO SELENIUM-ONLY")
             self.logger.info("="*60)
+
+            # Verificações de segurança
+            if safety_mode:
+                self.logger.info("🛡️ Modo de segurança ativado")
+
+                # Verificar limites razoáveis
+                if max_unfollows > 100:
+                    self.logger.warning(f"⚠️ Limite de unfollows muito alto: {max_unfollows}")
+                    max_unfollows = 100
+                    self.logger.info(f"🛡️ Limitado a {max_unfollows} unfollows por segurança")
+
+                if delay_between < 2.0:
+                    self.logger.warning(f"⚠️ Delay muito baixo: {delay_between}s")
+                    delay_between = 3.0
+                    self.logger.info(f"🛡️ Delay aumentado para {delay_between}s por segurança")
 
             # 1. Inicializar scraper
             if not self.initialize_scraper():
