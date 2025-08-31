@@ -205,6 +205,31 @@ A IA protege automaticamente:
 - Certifique-se de estar logado no Twitter/X
 - Use o navegador padrão configurado
 
+## 📁 Organização do Repositório
+
+```
+unf_twitter/
+├── 🆕 SISTEMA HÍBRIDO (PRINCIPAL)
+│   ├── main_hybrid.py              # Execução única
+│   ├── twitter_hybrid_auto.py      # Execução automática
+│   ├── twitter_hybrid_unfollow.py  # Módulo principal
+│   └── migrate_to_hybrid.py        # Script de migração
+│
+├── 🛠️ COMPONENTES COMPARTILHADOS
+│   ├── immunity_analyzer.py        # Análise de IA
+│   ├── status.py                   # Verificação de status
+│   └── requirements.txt            # Dependências
+│
+├── 🌐 EXTENSÃO CHROME
+│   └── twitter-mass-unfollow/      # Extensão integrada
+│
+├── 📜 SISTEMA LEGADO
+│   └── legacy/                     # Sistema Selenium antigo
+│
+└── 📦 PROJETOS ARQUIVADOS
+    └── archive/                    # Projetos alternativos analisados
+```
+
 ## ⚖️ Aviso Legal
 
 Use responsavelmente e respeite os termos de serviço do Twitter/X. O sistema foi projetado para ser conservador e proteger usuários relevantes. Funciona apenas com navegador, sem violar limitações de API.
