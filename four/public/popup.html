@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      font-size: 66%;
+    }
+
+    body {
+      padding: 1.4rem;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+    }
+
+    p {
+      margin: 0.2rem 0 1rem;
+      color: #a0a0a0;
+      font-size: 1.6rem;
+    }
+
+    a {
+      color: #2c6ca5;
+    }
+
+    .actions {
+      display: flex;
+      min-width: 48rem;
+      gap: 1.2rem;
+    }
+
+    button {
+      border: none;
+      flex: 1;
+      background-color: #1da1f2;
+      color: #fff;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      transform: scale(1);
+      font-size: 1.4rem;
+      user-select: none;
+      -webkit-user-select: none;
+      text-transform: uppercase;
+      box-shadow: -0.4rem 0.6rem #0277bd;
+      padding: 1rem 0;
+      font-weight: bold;
+      transition: transform 0.1s ease;
+    }
+
+    button#demo {
+      background-color: transparent;
+      border: 1px solid #2C3E50;
+      color: #333;
+      box-shadow: -0.4rem 0.6rem #333;
+    }
+
+    button#unfollow-not-following {
+      flex: 2;
+    }
+
+    button#stop {
+      background-color: #c62828;
+      box-shadow: -0.4rem 0.6rem #610000;
+    }
+
+    button:hover {
+      transform: scale(0.97);
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    button:disabled {
+      border: 1px solid #999999;
+      background-color: #cccccc;
+      color: #666666;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: scale(1);
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Mass unfollow users on this page</h1>
+    <p>
+      To exclude specific users, visit the
+      <a href="/options.html" target="_blank">options page</a>
+    </p>
+    <div class="actions">
+      <button id="demo" title="See how it works. This doesn't unfollow anyone">demo</button>
+      <button id="unfollow-all" title="Unfollow all accounts">all</button>
+      <button id="unfollow-not-following" title="Unfollow accounts you follow but not following you">
+        not following you
+      </button>
+      <button id="stop">stop</button>
+    </div>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+
+</html>

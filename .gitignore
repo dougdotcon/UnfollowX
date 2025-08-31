@@ -1,5 +1,7 @@
 # Environment variables
 .env
+one
+two
 
 # Python
 __pycache__/

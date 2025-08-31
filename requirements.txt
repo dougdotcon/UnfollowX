@@ -1,4 +1,5 @@
-# Dependências para sistema Selenium-only (sem API do Twitter)
+# Dependências para sistema híbrido e Selenium (sem API do Twitter)
+
 # Selenium e automação web
 selenium>=4.15.0
 webdriver-manager>=3.8.0
@@ -15,3 +16,6 @@ python-dotenv>=1.0.0
 # Parsing e manipulação de dados web
 beautifulsoup4>=4.12.0
 lxml>=4.9.0
+
+# Dependências específicas do sistema híbrido
+# (Mesmas dependências do Selenium, pois o híbrido usa Selenium + extensão)

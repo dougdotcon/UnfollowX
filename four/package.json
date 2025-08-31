@@ -1,0 +1,24 @@
+{
+  "name": "twitter-mass-unfollow",
+  "version": "0.1.0",
+  "description": "A simple (configurable) way to mass unfollow your X (formerly Twitter) followings",
+  "private": true,
+  "scripts": {
+    "dev": "bun run config/watch.ts --dir=src,public",
+    "build": "bun run config/build.ts",
+    "pack": "bun run config/pack.ts"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.5",
+    "@types/bun": "latest",
+    "@types/chrome": "^0.0.268",
+    "adm-zip": "^0.5.12",
+    "prettier": "^2.8.8"
+  },
+  "dependencies": {
+    "element-ready": "^7.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
