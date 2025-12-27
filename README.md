@@ -1,235 +1,133 @@
-# Twitter/X Unfollow Bot com IA - SISTEMA HÍBRIDO
+# UnfollowXBot - Intelligent Hybrid System for Twitter/X
 
-Bot automático inteligente para dar unfollow em usuários que não te seguem de volta no Twitter/X, com análise de IA para proteger desenvolvedores, pesquisadores e profissionais de tech.
+**UnfollowXBot** is an intelligent automated bot designed to unfollow users who do not follow back on Twitter/X. It features a hybrid analysis system using AI (OpenRouter) to protect developers, researchers, and tech professionals.
 
-**🆕 NOVA VERSÃO HÍBRIDA: Extensão Chrome + Análise de IA Python!**
+**🆕 Hybrid Version:** Chrome Extension + Python AI Analysis!
 
-## 🚀 Características Principais
+## 🚀 Key Features
 
-### 🆕 Sistema Híbrido (RECOMENDADO)
-- 🌐 **Extensão Chrome** - Funciona com as mudanças atuais do X
-- 🤖 **Análise de IA** - OpenRouter para categorizar perfis
-- 🛡️ **Sistema de Imunidade** - Protege devs, pesquisadores, acadêmicos
-- 📊 **Análise em CSV** - Dados organizados e auditáveis com bio completa
-- ⚡ **Identificação Automática** - Detecta não-seguidores automaticamente
-- ⏰ **Execução Automática** - 15 unfollows a cada 25 minutos
-- 🚫 **Sem API** - Não requer credenciais da API do Twitter
+### 🆕 Hybrid System (RECOMMENDED)
+- 🌐 **Chrome Extension** - Works seamlessly with current X UI changes.
+- 🤖 **AI Analysis** - Uses OpenRouter to categorize and analyze profiles.
+- 🛡️ **Immunity System** - Automatically protects devs, researchers, and academics.
+- 📊 **CSV Analysis** - Organized, auditable data logs with complete bios.
+- ⚡ **Auto Identification** - Detects non-followers automatically.
+- ⏰ **Auto Execution** - Unfollows 15 users every 25 minutes (to respect rate limits).
+- 🚫 **No API Required** - Does not require Twitter API credentials.
 
-### 📜 Sistema Selenium (LEGADO)
-- 🌐 **Selenium Only** - Funciona apenas com navegador (Chrome/Brave)
-- 💾 **Progresso Salvo** - Pode ser pausado e retomado
-- 🔄 **Filtros Inteligentes** - Múltiplos critérios de filtragem
-- 📈 **Suporte a Grandes Volumes** - Otimizado para milhares de usuários
+### 📜 Selenium System (LEGACY)
+- 🌐 **Selenium Only** - Works strictly via browser automation (Chrome/Brave).
+- 💾 **Saved Progress** - Can be paused and resumed.
+- 🔄 **Smart Filters** - Multiple criteria for filtering users.
+- 📈 **High Volume Support** - Optimized for thousands of users.
 
-## 🎯 Fluxo Automático
+## 🎯 Workflow
 
-### 🆕 Sistema Híbrido:
-1. **🌐 Extensão Chrome** - Identifica não-seguidores automaticamente
-2. **📋 Coleta de Dados** - Extrai username, bio, localização de cada perfil
-3. **🤖 Análise de IA** - IA analisa cada perfil para determinar imunidade
-4. **💾 CSV Completo** - Salva análise detalhada em formato CSV
-5. **🛡️ Filtros** - Remove usuários imunes automaticamente
-6. **⚡ Unfollow Inteligente** - Executa unfollows seletivos via extensão
+### 🆕 Hybrid System:
+1. **🌐 Chrome Extension** - Identifies non-followers automatically.
+2. **📋 Data Collection** - Extracts username, bio, and location from profiles.
+3. **🤖 AI Analysis** - AI analyzes profiles to determine immunity status.
+4. **💾 Complete CSV** - Saves detailed analysis to CSV format.
+5. **🛡️ Filtering** - Automatically removes immune users from the list.
+6. **⚡ Intelligent Unfollow** - Executes selective unfollows via extension.
 
-### 📜 Sistema Selenium (Legado):
-1. **🌐 Coleta via Selenium** - Extrai listas de following/followers do navegador
-2. **📋 Extração de Bio** - Coleta bio, localização e dados completos de cada perfil
-3. **🤖 Análise de IA** - IA analisa cada perfil para determinar imunidade
-4. **💾 CSV Completo** - Salva análise detalhada em formato CSV
-5. **🛡️ Filtros** - Remove usuários imunes automaticamente
-6. **⚡ Unfollow Selenium** - Executa unfollows via navegador
+### 📜 Legacy System:
+1. **🌐 Selenium Collection** - Extracts following/followers lists.
+2. **📋 Bio Extraction** - Gathers bio, location, and profile data.
+3. **🤖 AI Analysis** - Analyzes profiles for immunity.
+4. **💾 CSV Export** - Saves data to CSV.
+5. **🛡️ Filtering** - Removes protected profiles.
+6. **⚡ Selenium Unfollow** - Executed via browser automation.
 
-## 📦 Instalação
+## 📦 Installation
 
-```bash
-# Instalar dependências
+bash
+# Install dependencies
 pip install -r requirements.txt --force-reinstall
-```
 
-## ⚙️ Configuração
 
-### 1. Pré-requisitos
+## ⚙️ Configuration
 
-- **Navegador**: Chrome ou Brave instalado
-- **Login**: Estar logado no Twitter/X no navegador
-- **OpenRouter**: Chave da API para análise de IA
+### 1. Prerequisites
 
-### 2. Configurar Variáveis de Ambiente
+- **Browser**: Chrome or Brave installed.
+- **Login**: Logged into Twitter/X in the browser.
+- **OpenRouter**: API Key for AI analysis.
 
-```bash
-# Copiar arquivo de exemplo
+### 2. Configure Environment Variables
+
+bash
+# Copy example file
 cp .env.example .env
 
-# Editar com suas credenciais
-nano .env  # ou use seu editor preferido
-```
+# Edit with your credentials
+nano .env
 
-### 3. Preencher Credenciais no .env
 
-```bash
-# APENAS OpenRouter é necessário (sem API do Twitter!)
-OPENROUTER_API_KEY=sua_openrouter_key_aqui
+### 3. Fill Credentials in .env
 
-# Configurações opcionais
+bash
+# OpenRouter is the ONLY requirement (No Twitter API needed!)
+OPENROUTER_API_KEY=your_openrouter_key_here
+
+# Optional settings
 BROWSER=chrome
 HEADLESS=false
 MAX_FOLLOWING=5000
 MAX_FOLLOWERS=5000
-```
 
-### 4. Obter Credencial
 
-- **OpenRouter API**: [openrouter.ai](https://openrouter.ai/) (ÚNICO requisito)
+### 4. Obtain Credentials
 
-## 🚀 Uso Rápido
+- **OpenRouter API**: [openrouter.ai](https://openrouter.ai/) (Only requirement)
 
-### 🆕 Sistema Híbrido (RECOMENDADO)
+## 🚀 Quick Start
 
-#### Execução Automática
-```bash
-python twitter_hybrid_auto.py
-```
+### 🆕 Hybrid System (Recommended)
 
-#### Execução Única Completa
-```bash
-python main_hybrid.py
-```
+#### Automatic Execution
+bash
+python twitter_hybrid_bot.py
 
-### 📜 Sistema Selenium (LEGADO)
 
-#### Execução Automática
-```bash
-python twitter_unfollow_auto.py
-```
+#### Extension Setup
+1. Open Chrome/Brave and go to `chrome://extensions/`
+2. Enable "Developer Mode"
+3. Click "Load Unpacked" and select the `extension` folder.
+4. Pin the extension to the toolbar.
 
-#### Execução Única Completa
-```bash
-python main_selenium_only.py
-```
+### 📜 Selenium System (Legacy)
 
-#### Teste Rápido
-```bash
-python test_selenium_simple.py
-```
+#### Unfollow Non-Followers
+bash
+python bot.py
 
-#### Verificar Status
-```bash
-python status.py
-```
 
-## 🛡️ Sistema de Imunidade
+#### Analyze User via AI (Command Line)
+bash
+python analyze.py --username @user
 
-A IA protege automaticamente:
 
-- 💻 **Desenvolvedores** - Software engineers, programmers
-- 🧠 **Pesquisadores IA/ML** - Data scientists, ML engineers  
-- 🎓 **Acadêmicos** - Professores, estudantes de universidades renomadas
-- 🏢 **Tech Workers** - Funcionários de Google, Meta, Apple, etc.
-- 🚀 **Founders** - CEOs e fundadores de startups tech
-- 📊 **Cientistas** - Pesquisadores acadêmicos
+## 🛡️ Protection Logic
 
-## 📊 Arquivos Gerados
+The AI analyzes the user's bio and metadata for keywords indicating they are:
+- Developers (`dev`, `engineer`, `software`)
+- Researchers (`research`, `PhD`, `science`)
+- Academics (`professor`, `university`, `academic`)
+- Tech professionals (`CTO`, `tech`, `AI`)
 
-### 🆕 Sistema Híbrido:
-- `hybrid_analysis_YYYYMMDD_HHMMSS.csv` - Análise completa com IA e bio
-- `hybrid_unfollow_state.json` - Estado e progresso do sistema
-- `twitter_hybrid_unfollow.log` - Logs detalhados do sistema híbrido
-- `twitter_hybrid_auto.log` - Logs da execução automática
+These profiles are automatically marked as **IMMUNE** and excluded from unfollowing.
 
-### 📜 Sistema Selenium (Legado):
-- `selenium_analysis_YYYYMMDD_HHMMSS.csv` - Análise completa com IA e bio
-- `selenium_unfollow_state.json` - Estado e progresso do sistema
-- `twitter_selenium_auto.log` - Logs detalhados
-- `analysis_progress.json` - Progresso da análise (temporário)
+## ⚠️ Important Notes
 
-## 📈 Exemplo de CSV Gerado
+- **Rate Limits**: The bot respects X limits (approx 15 unfollows/hour).
+- **Safety**: Use the AI analysis to avoid burning bridges with valuable connections.
+- **Legality**: This bot complies with X's Terms of Service by using browser automation instead of unauthorized API access.
 
-| username | bio | location | category | immunity_status | confidence | reasoning |
-|----------|-----|----------|----------|----------------|------------|-----------|
-| johndoe | Software Engineer at Google | San Francisco | ENGINEER | immune | 0.95 | Tech professional |
-| janedoe | Marketing Manager | New York | OTHER | not_immune | 0.80 | Non-tech profile |
+## 🤝 Contributing
 
-## 🔧 Vantagens do Sistema
+Contributions are welcome! Please open an issue or pull request.
 
-### 🆕 Sistema Híbrido:
-- ✅ **Funciona Atualmente** - Compatível com mudanças recentes do X
-- ✅ **Sem limitações de API** - Funciona com conta gratuita
-- ✅ **Identificação Precisa** - Detecta não-seguidores automaticamente
-- ✅ **Bio completa** - Extrai descrição, localização, verificação
-- ✅ **Análise de IA Integrada** - Protege desenvolvedores e pesquisadores
-- ✅ **Execução Otimizada** - Ciclos automáticos de 25 minutos
+## 📜 License
 
-### 📜 Sistema Selenium (Legado):
-- ⚠️ **Pode não funcionar** - Devido às mudanças do X
-- ✅ **Grandes volumes** - Suporta milhares de usuários
-- ✅ **Progresso salvo** - Retoma de onde parou em caso de interrupção
-- ✅ **Análise detalhada** - Dados completos para melhor categorização
-
-## ⚠️ Segurança
-
-- ✅ Rate limiting automático entre ações
-- ✅ Delays inteligentes para evitar detecção
-- ✅ Salva progresso para recuperação
-- ✅ Sistema de lotes para grandes volumes
-- ✅ Logs detalhados para auditoria
-- ✅ Usa navegador já logado (sem credenciais expostas)
-
-## 📋 Requisitos
-
-- Python 3.8+
-- Chrome ou Brave instalado
-- Estar logado no Twitter/X no navegador
-- Chave API do OpenRouter
-- Dependências: `selenium`, `webdriver-manager`, `pandas`, `openai`, `schedule`, `python-dotenv`
-
-## 🔒 Segurança das Credenciais
-
-- ✅ Apenas OpenRouter API necessária (armazenada em `.env`)
-- ✅ Sem credenciais do Twitter expostas
-- ✅ Usa navegador já logado (sessão existente)
-- ✅ Arquivo `.env.example` como template
-- ✅ `.gitignore` protege dados sensíveis
-
-## 🆘 Troubleshooting
-
-### Navegador não abre:
-- Instale/atualize Chrome ou Brave
-- Execute: `pip install --upgrade webdriver-manager`
-
-### Coleta lenta:
-- Normal para grandes listas (suas 5.268 pessoas)
-- Sistema otimizado com progresso salvo
-- Pode ser pausado e retomado
-
-### Erro de login:
-- Certifique-se de estar logado no Twitter/X
-- Use o navegador padrão configurado
-
-## 📁 Organização do Repositório
-
-```
-unf_twitter/
-├── 🆕 SISTEMA HÍBRIDO (PRINCIPAL)
-│   ├── main_hybrid.py              # Execução única
-│   ├── twitter_hybrid_auto.py      # Execução automática
-│   ├── twitter_hybrid_unfollow.py  # Módulo principal
-│   └── migrate_to_hybrid.py        # Script de migração
-│
-├── 🛠️ COMPONENTES COMPARTILHADOS
-│   ├── immunity_analyzer.py        # Análise de IA
-│   ├── status.py                   # Verificação de status
-│   └── requirements.txt            # Dependências
-│
-├── 🌐 EXTENSÃO CHROME
-│   └── twitter-mass-unfollow/      # Extensão integrada
-│
-├── 📜 SISTEMA LEGADO
-│   └── legacy/                     # Sistema Selenium antigo
-│
-└── 📦 PROJETOS ARQUIVADOS
-    └── archive/                    # Projetos alternativos analisados
-```
-
-## ⚖️ Aviso Legal
-
-Use responsavelmente e respeite os termos de serviço do Twitter/X. O sistema foi projetado para ser conservador e proteger usuários relevantes. Funciona apenas com navegador, sem violar limitações de API.
+MIT License. Use responsibly.
